@@ -1,0 +1,48 @@
+
+********* FS Logix Black Screen ***********************
+https://msendpointmgr.com/2021/08/30/fslogix-slow-sign-in-fix-redux/
+https://www.parallels.com/blogs/ras/fslogix-black-screen/ 
+
+HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AppReadinessPreShellTimeoutMs
+Data Type: DWORD
+Value:0x7530
+HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\FirstLogonTimeout
+Data Type: DWORD
+Value:0x1e
+HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\DelayedDesktopSwitchTimeout
+Data Type: DWORD
+Value:0x1e
+
+https://github.com/mardahl/PSBucket/blob/master/invoke-StateRepositoryReset.ps1
+*********************************************************
+
+
+
+********* RDS 2019 and Indexing ********************
+
+
+Set the following registry value if not present or already set to 0 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Search] "EnablePerUserCatalog"=dword:00000000
+*****************************************************
+
+
+
+
+*********  RDS Registry Bloat ********************
+Install KB4467684 and create a GPO that creates the following reg key:
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy
+DeleteUserAppContainersOnLogoff (DWORD)
+Value: 1
+
+irstly, make sue that your servers are fully patched, then set the registry key value "DeleteUserAppContainersOnLogoff" to stop the bloat getting worse, then remove the excess registry entries in the FirewallRules, Notifications, and RestrictedServices\Configurable\System registry keys
+
+Remove-Item "HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\RestrictedServices\Configurable\System"
+New-Item "HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\RestrictedServices\Configurable\System"
+
+Remove-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Notifications" -Recurse
+New-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Notifications"
+
+Remove-Item "HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\RestrictedServices\AppIso\FirewallRules"
+New-Item "HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\RestrictedServices\AppIso\FirewallRules
+
+https://www.phy2vir.com/windows-server-2016-2019-rds-server-black-screen-or-start-menu-not-working/
